@@ -98,10 +98,16 @@ class Robot(models.Model):
         return self.name
     
 class RobotHasAutomation(models.Model):
-    robot = models.ForeignKey(Robot, on_delete=models.CASCADE, related_name="robot_automations")
-    automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="automation_robots")
+    robot = models.ForeignKey(Robot, on_delete=models.CASCADE, related_name="robot_automations", verbose_name="Robô")
+    automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="automation_robots", verbose_name="Automação")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Robô por Automação"
+        verbose_name_plural = "Robôs por Automações"
+        unique_together = ('robot', 'automation')
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.robot.name} - {self.automation.name}"
@@ -111,6 +117,16 @@ class System(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nome")
     description = models.TextField(verbose_name="Descrição")
     restriction = models.BooleanField(default=False, verbose_name="Restrição")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Sistema"
+        verbose_name_plural = "Sistemas"
+        ordering = ['-created_at', 'name']
+    
+    def __str__(self):
+        return self.name
 
 class AutomationHasSystem(models.Model):
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="automation_systems")

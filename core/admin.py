@@ -1,6 +1,6 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from .models import Automation, Robot
+from .models import Automation, Robot, RobotHasAutomation, System
 from django.utils.translation import gettext_lazy as _
 
 
@@ -61,7 +61,7 @@ class AutomationAdmin(ModelAdmin):
     actions_submit_line = []  # Displayed near save in object detail
 
     # Display cancel button in submit line in changeform
-    # change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
 
 @admin.register(Robot)
 class RobotAdmin(ModelAdmin):
@@ -107,4 +107,97 @@ class RobotAdmin(ModelAdmin):
     actions_submit_line = []  # Displayed near save in object detail
 
     # Display cancel button in submit line in changeform
-    # change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
+
+@admin.register(RobotHasAutomation)
+class RobotHasAutomationAdmin(ModelAdmin):
+    related_modal_active = True 
+    fieldsets = (
+        (
+            ("Informações principais"),
+            {
+                "fields": [
+                    'robot', 'automation'
+                ],
+            },
+        ),
+    )
+    
+    list_display = ('robot', 'automation', 'updated_at', 'created_at')
+    search_fields = ('robot__name', 'automation__project_name')
+    list_filter = ('created_at', 'updated_at')
+    ordering = ('-created_at', 'robot__name')
+    compressed_fields = True
+    warn_unsaved_form = True
+
+
+    list_filter_submit = False
+
+     # Display changelist in fullwidth
+    list_fullwidth = False
+
+
+    # Set to False, to enable filter as "sidebar"
+    list_filter_sheet = True
+
+    # Position horizontal scrollbar in changelist at the top
+    list_horizontal_scrollbar_top = False
+
+    # Dsable select all action in changelist
+    list_disable_select_all = False
+
+    # Custom actions
+    actions_list = []  # Displayed above the results list
+    actions_row = []  # Displayed in a table row in results list
+    actions_detail = []  # Displayed at the top of for in object detail
+    actions_submit_line = []  # Displayed near save in object detail
+
+    # Display cancel button in submit line in changeform
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False3
+
+@admin.register(System)
+class SystemAdmin(ModelAdmin):
+    fieldsets = (
+        (
+            ("Informações principais"),
+            {
+                "fields": [
+                    'name', 'description', 'restriction'
+                ],
+            },
+        ),
+    )
+    
+    list_display = ('name', 'restriction', 'updated_at', 'created_at')
+    search_fields = ('name', 'description')
+    list_filter = ('restriction', 'created_at', 'updated_at')
+    ordering = ('-created_at', 'name')
+    compressed_fields = True
+    warn_unsaved_form = True
+
+
+    list_filter_submit = False
+
+     # Display changelist in fullwidth
+    list_fullwidth = False
+
+
+    # Set to False, to enable filter as "sidebar"
+    list_filter_sheet = True
+
+    # Position horizontal scrollbar in changelist at the top
+    list_horizontal_scrollbar_top = False
+
+    # Dsable select all action in changelist
+    list_disable_select_all = False
+
+    # Custom actions
+    actions_list = []  # Displayed above the results list
+    actions_row = []  # Displayed in a table row in results list
+    actions_detail = []  # Displayed at the top of for in object detail
+    actions_submit_line = []  # Displayed near save in object detail
+
+    # Display cancel button in submit line in changeform
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
+
+    
