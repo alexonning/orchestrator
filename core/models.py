@@ -169,31 +169,20 @@ class Schedule(models.Model):
     # day_of_months = models.JSONField(default=list, verbose_name="Dias do Mês", validators=[models.Min(1), models.Max(31)], help_text="Selecione um ou mais dias do mês. Ex: [1, 15, 30]")
 
     months = MultiSelectField(default=list, verbose_name="Meses", choices=DAYS_OF_MONTH_CHOICES, help_text="Selecione um ou mais meses. Ex: [1, 2, 3]")
-    # hours = models.JSONField(default=list, verbose_name="Horas", validators=[models.Min(0), models.Max(23)], help_text="Selecione um ou mais horários. Ex: [0, 12, 23]")
-    # minutes = models.JSONField(default=list, verbose_name="Minutos", validators=[models.Min(0), models.Max(59)], help_text="Selecione um ou mais minutos. Ex: [0, 30, 59]")
+    hours = models.JSONField(default=list, verbose_name="Horas", help_text="Selecione um ou mais horários. Ex: [0, 12, 23]")
+    minutes = models.JSONField(default=list, verbose_name="Minutos", help_text="Selecione um ou mais minutos. Ex: [0, 30, 59]")
 
     active = models.BooleanField(default=True, verbose_name="Ativo", blank=False, null=False)
     action = models.CharField(max_length=255, verbose_name="Ação")
     business_day = models.BooleanField(default=False, verbose_name="Dia Útil")
 
-    # created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
-    # updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
 
     class Meta:
         verbose_name = "Agendamento"
         verbose_name_plural = "Agendamentos"
-        # ordering = ['-created_at']
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.automation.name
-
-class TimeRestriction(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="time_restrictions")
-    start_time = models.TimeField(verbose_name="Início")
-    end_time = models.TimeField(verbose_name="Fim")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
-
-    def __str__(self):
-        return f"{self.automation.name} - {self.start_time} a {self.end_time}"

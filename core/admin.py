@@ -295,7 +295,6 @@ class ScheduleRestrictionAdmin(ModelAdmin):
     # Display cancel button in submit line in changeform
     change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
 
-
 @admin.register(Schedule)
 class ScheduleAdmin(ModelAdmin):
     form = ScheduleForm
@@ -305,7 +304,7 @@ class ScheduleAdmin(ModelAdmin):
             ("Informações principais"),
             {
                 "fields": [
-                    'automation', 'days_of_week', 'months', 'active', 'action', 'business_day'
+                    'automation', 'days_of_week', 'months', 'active', 'action', 'business_day', 'hours', 'minutes'
                 ],
                 "description": "Marque os dias da semana e meses desejados."
             },
