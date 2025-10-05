@@ -134,16 +134,28 @@ class AutomationHasSystem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
 
+    class Meta:
+        verbose_name = "Sistema por Automação"
+        verbose_name_plural = "Sistemas por Automações"
+        unique_together = ('automation', 'system')
+        ordering = ['-created_at']
+        
     def __str__(self):
         return f"{self.automation.name} - {self.system.name}"
 
 class ScheduleRestriction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="schedule_restrictions")
-    start_time = models.DateTimeField(verbose_name="Início")
-    end_time = models.DateTimeField(verbose_name="Fim")
+    start_time = models.TimeField(verbose_name="Início")
+    end_time = models.TimeField(verbose_name="Fim")
+    active = models.BooleanField(default=True, verbose_name="Ativo")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Restrição de Agendamento"
+        verbose_name_plural = "Restrições de Agendamento"
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.automation.name} - {self.start_time} a {self.end_time}"

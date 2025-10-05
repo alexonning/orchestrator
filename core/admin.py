@@ -1,6 +1,6 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from .models import Automation, Robot, RobotHasAutomation, System
+from .models import Automation, Robot, RobotHasAutomation, System, AutomationHasSystem, ScheduleRestriction
 from django.utils.translation import gettext_lazy as _
 
 
@@ -200,4 +200,94 @@ class SystemAdmin(ModelAdmin):
     # Display cancel button in submit line in changeform
     change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
 
+@admin.register(AutomationHasSystem)
+class AutomationHasSystemAdmin(ModelAdmin):
+    related_modal_active = True 
+    fieldsets = (
+        (
+            ("Informações principais"),
+            {
+                "fields": [
+                    'automation', 'system'
+                ],
+            },
+        ),
+    )
     
+    list_display = ('automation', 'system', 'updated_at', 'created_at')
+    search_fields = ('automation__project_name', 'system__name')
+    list_filter = ('created_at', 'updated_at')
+    ordering = ('-created_at', 'automation__project_name')
+    compressed_fields = True
+    warn_unsaved_form = True
+
+
+    list_filter_submit = False
+
+     # Display changelist in fullwidth
+    list_fullwidth = False
+
+
+    # Set to False, to enable filter as "sidebar"
+    list_filter_sheet = True
+
+    # Position horizontal scrollbar in changelist at the top
+    list_horizontal_scrollbar_top = False
+
+    # Dsable select all action in changelist
+    list_disable_select_all = False
+
+    # Custom actions
+    actions_list = []  # Displayed above the results list
+    actions_row = []  # Displayed in a table row in results list
+    actions_detail = []  # Displayed at the top of for in object detail
+    actions_submit_line = []  # Displayed near save in object detail
+
+    # Display cancel button in submit line in changeform
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
+    
+    
+@admin.register(ScheduleRestriction)
+class ScheduleRestrictionAdmin(ModelAdmin):
+    fieldsets = (
+        (
+            ("Informações principais"),
+            {
+                "fields": [
+                    'automation', 'start_time', 'end_time', 'active'
+                ],
+            },
+        ),
+    )
+    
+    list_display = ('automation', 'start_time', 'end_time', 'active')
+    search_fields = ['automation__project_name']
+    list_filter = ('created_at', 'updated_at', 'active')
+    ordering = ('-created_at', 'automation__project_name')
+    compressed_fields = True
+    warn_unsaved_form = True
+
+
+    list_filter_submit = False
+
+     # Display changelist in fullwidth
+    list_fullwidth = False
+
+
+    # Set to False, to enable filter as "sidebar"
+    list_filter_sheet = True
+
+    # Position horizontal scrollbar in changelist at the top
+    list_horizontal_scrollbar_top = False
+
+    # Dsable select all action in changelist
+    list_disable_select_all = False
+
+    # Custom actions
+    actions_list = []  # Displayed above the results list
+    actions_row = []  # Displayed in a table row in results list
+    actions_detail = []  # Displayed at the top of for in object detail
+    actions_submit_line = []  # Displayed near save in object detail
+
+    # Display cancel button in submit line in changeform
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
