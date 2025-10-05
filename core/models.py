@@ -74,20 +74,25 @@ class Automation(models.Model):
         ordering = ['-created_at', 'name']
 
     def __str__(self):
-        return self.name
+        return self.project_name
 
 class Robot(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, verbose_name="Nome")
-    automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="robots")
-    type = models.CharField(max_length=20, verbose_name="Tipo")
+    automation = models.ForeignKey(Automation, null=True, blank=True, on_delete=models.DO_NOTHING, related_name="robots")
+    type = models.CharField(max_length=20, verbose_name="Tipo", choices=[('Robot', 'Robô'), ('Developer', 'Desenvolvedor')], help_text="Informe o tipo do robô.")
     host_name = models.CharField(max_length=255, verbose_name="Nome do Host")
-    host_ip = models.GenericIPAddressField(verbose_name="IP do Host")
+    host_ip = models.CharField(max_length=255, verbose_name="IP do Host")
     status = models.CharField(max_length=25, choices=STATUS_ROBOT_CHOICES, default='idle', verbose_name="Status")
     active = models.BooleanField(default=True, verbose_name="Ativo")
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Robô"
+        verbose_name_plural = "Robôs"
+        ordering = ['-created_at', 'name']
 
     def __str__(self):
         return self.name
