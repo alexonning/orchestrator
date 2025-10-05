@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from multiselectfield import MultiSelectField
 
 # Create your models here.
 PRIORITY_CHOICES = [(i, str(i)) for i in range(0, 10)]
@@ -31,18 +32,18 @@ DAYS_OF_WEEK_CHOICES = [
 ]
 
 DAYS_OF_MONTH_CHOICES = [
-    (1, 'Janeiro'),
-    (2, 'Fevereiro'),
-    (3, 'Março'),
-    (4, 'Abril'),
-    (5, 'Maio'),
-    (6, 'Junho'),
-    (7, 'Julho'),
-    (8, 'Agosto'),
-    (9, 'Setembro'),
-    (10, 'Outubro'),
-    (11, 'Novembro'),
-    (12, 'Dezembro'),
+    ('1', 'Janeiro'),
+    ('2', 'Fevereiro'),
+    ('3', 'Março'),
+    ('4', 'Abril'),
+    ('5', 'Maio'),
+    ('6', 'Junho'),
+    ('7', 'Julho'),
+    ('8', 'Agosto'),
+    ('9', 'Setembro'),
+    ('10', 'Outubro'),
+    ('11', 'Novembro'),
+    ('12', 'Dezembro'),
 ]
 
 class Automation(models.Model):
@@ -164,16 +165,24 @@ class Schedule(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="schedules")
 
-    days_of_week = models.JSONField(default=list, verbose_name="Dias da Semana", choices=DAYS_OF_WEEK_CHOICES, help_text="Selecione um ou mais dias da semana. Ex: ['mon', 'tue', 'wed']")
+    days_of_week = MultiSelectField(default=list, verbose_name="Dias da Semana", choices=DAYS_OF_WEEK_CHOICES, help_text="Selecione um ou mais dias da semana. Ex: ['mon', 'tue', 'wed']")
     # day_of_months = models.JSONField(default=list, verbose_name="Dias do Mês", validators=[models.Min(1), models.Max(31)], help_text="Selecione um ou mais dias do mês. Ex: [1, 15, 30]")
 
-    months = models.JSONField(default=list, verbose_name="Meses", choices=DAYS_OF_MONTH_CHOICES, help_text="Selecione um ou mais meses. Ex: [1, 2, 3]")
+    months = MultiSelectField(default=list, verbose_name="Meses", choices=DAYS_OF_MONTH_CHOICES, help_text="Selecione um ou mais meses. Ex: [1, 2, 3]")
     # hours = models.JSONField(default=list, verbose_name="Horas", validators=[models.Min(0), models.Max(23)], help_text="Selecione um ou mais horários. Ex: [0, 12, 23]")
     # minutes = models.JSONField(default=list, verbose_name="Minutos", validators=[models.Min(0), models.Max(59)], help_text="Selecione um ou mais minutos. Ex: [0, 30, 59]")
 
-    active = models.BooleanField(default=True, verbose_name="Ativo")
+    active = models.BooleanField(default=True, verbose_name="Ativo", blank=False, null=False)
     action = models.CharField(max_length=255, verbose_name="Ação")
     business_day = models.BooleanField(default=False, verbose_name="Dia Útil")
+
+    # created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    # updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Agendamento"
+        verbose_name_plural = "Agendamentos"
+        # ordering = ['-created_at']
 
     def __str__(self):
         return self.automation.name

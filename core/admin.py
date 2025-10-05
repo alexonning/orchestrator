@@ -1,7 +1,11 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from .models import Automation, Robot, RobotHasAutomation, System, AutomationHasSystem, ScheduleRestriction
+from .models import (
+    Automation, Robot, RobotHasAutomation, System, AutomationHasSystem, 
+    ScheduleRestriction, Schedule, DAYS_OF_WEEK_CHOICES, DAYS_OF_MONTH_CHOICES
+)
 from django.utils.translation import gettext_lazy as _
+from.forms import ScheduleForm
 
 
 @admin.register(Automation)
@@ -246,7 +250,6 @@ class AutomationHasSystemAdmin(ModelAdmin):
     # Display cancel button in submit line in changeform
     change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
     
-    
 @admin.register(ScheduleRestriction)
 class ScheduleRestrictionAdmin(ModelAdmin):
     fieldsets = (
@@ -266,6 +269,63 @@ class ScheduleRestrictionAdmin(ModelAdmin):
     ordering = ('-created_at', 'automation__project_name')
     compressed_fields = True
     warn_unsaved_form = True
+
+
+    list_filter_submit = False
+
+     # Display changelist in fullwidth
+    list_fullwidth = False
+
+
+    # Set to False, to enable filter as "sidebar"
+    list_filter_sheet = True
+
+    # Position horizontal scrollbar in changelist at the top
+    list_horizontal_scrollbar_top = False
+
+    # Dsable select all action in changelist
+    list_disable_select_all = False
+
+    # Custom actions
+    actions_list = []  # Displayed above the results list
+    actions_row = []  # Displayed in a table row in results list
+    actions_detail = []  # Displayed at the top of for in object detail
+    actions_submit_line = []  # Displayed near save in object detail
+
+    # Display cancel button in submit line in changeform
+    change_form_show_cancel_button = True # show/hide cancel button in changeform, default: False
+
+
+@admin.register(Schedule)
+class ScheduleAdmin(ModelAdmin):
+    form = ScheduleForm
+    related_modal_active = True
+    fieldsets = (
+        (
+            ("Informações principais"),
+            {
+                "fields": [
+                    'automation', 'days_of_week', 'months', 'active', 'action', 'business_day'
+                ],
+                "description": "Marque os dias da semana e meses desejados."
+            },
+        ),
+    )
+    
+    list_display = ['automation', 'get_days_of_week', 'get_months', 'active', 'business_day']
+    search_fields = ['automation__project_name']
+    list_filter = ('active', 'business_day', 'days_of_week', 'months')
+    ordering = ('automation__project_name',)
+    compressed_fields = True
+    warn_unsaved_form = True
+
+    def get_days_of_week(self, obj):
+        return ", ".join([dict(DAYS_OF_WEEK_CHOICES).get(day) for day in obj.days_of_week])
+    get_days_of_week.short_description = "Dias da Semana"
+
+    def get_months(self, obj):
+        return ", ".join([dict(DAYS_OF_MONTH_CHOICES).get(month) for month in obj.months])
+    get_months.short_description = "Meses"
 
 
     list_filter_submit = False
