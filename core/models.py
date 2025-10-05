@@ -2,22 +2,22 @@ import uuid
 from django.db import models
 
 # Create your models here.
-PRIORITY_CHOICES = [(i, str(i)) for i in range(0, 31)]
+PRIORITY_CHOICES = [(i, str(i)) for i in range(0, 10)]
 
 STATUS_AUTOMATION_CHOICES = [
     ('roadmap', 'Roadmap'),
-    ('in_progress', 'In Progress'),
-    ('development', 'Development'),
-    ('homologation', 'Homologation'),
-    ('production', 'Production'),
-    ('discontinued', 'Discontinued'),
+    ('in_progress', 'Em Progresso'),
+    ('development', 'Desenvolvimento'),
+    ('homologation', 'Homologação'),
+    ('production', 'Produção'),
+    ('discontinued', 'Descontinuado'),
 ]
 
 STATUS_ROBOT_CHOICES = [
-    ('idle', 'Idle'),
-    ('working', 'Working'),
-    ('error', 'Error'),
-    ('shutting_down_systems', 'Shutting Down Systems'),
+    ('idle', 'Ocioso'),
+    ('working', 'Trabalhando'),
+    ('error', 'Erro'),
+    ('shutting_down_systems', 'Encerrando Sistemas'),
 ]
 
 DAYS_OF_WEEK_CHOICES = [
@@ -52,11 +52,11 @@ class Automation(models.Model):
     status = models.CharField(max_length=25, choices=STATUS_AUTOMATION_CHOICES, default='roadmap', verbose_name="Status")
     priority = models.IntegerField(default=0, verbose_name="Prioridade", choices=PRIORITY_CHOICES)
     business_day_only = models.BooleanField(default=False, verbose_name="Apenas Dias Úteis")
-    executor_time = models.DurationField(blank=True, null=True, verbose_name="Tempo do Executor")
-    average_executor_cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Custo Médio do Executor")
+    executor_time = models.DurationField(blank=True, null=True, verbose_name="Tempo do Executor", help_text="Tempo do executor em segundos.")
+    average_executor_cost = models.DecimalField(max_digits=10, decimal_places=10, blank=True, null=True, verbose_name="Custo Médio do Executor")
     limit_attempts = models.IntegerField(default=3, verbose_name="Limite de Tentativas")
     system_restriction = models.BooleanField(default=False, verbose_name="Restrição do Sistema")
-    project_type = models.CharField(max_length=25, verbose_name="Tipo de Projeto", help_text="Informe o tipo de projeto. Ex: Python, Java")
+    project_type = models.CharField(max_length=25, verbose_name="Tipo de Projeto", choices=[('Python', 'Python'), ('Java', 'Java')], help_text="Informe o tipo de projeto. Ex: Python, Java")
     git_project_url = models.CharField(max_length=255, verbose_name="URL do Projeto Git", help_text="Informe a URL do repositório Git.")
     project_name = models.CharField(max_length=255, verbose_name="Nome do Projeto", help_text="Informe o nome do projeto.")
     project_version = models.CharField(max_length=50, verbose_name="Versão do Projeto", help_text="Informe a versão do projeto.")
@@ -67,6 +67,11 @@ class Automation(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Automação"
+        verbose_name_plural = "Automações"
+        ordering = ['-created_at', 'name']
 
     def __str__(self):
         return self.name
@@ -87,7 +92,6 @@ class Robot(models.Model):
     def __str__(self):
         return self.name
     
-
 class RobotHasAutomation(models.Model):
     robot = models.ForeignKey(Robot, on_delete=models.CASCADE, related_name="robot_automations")
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="automation_robots")
@@ -97,7 +101,6 @@ class RobotHasAutomation(models.Model):
     def __str__(self):
         return f"{self.robot.name} - {self.automation.name}"
     
-
 class System(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, verbose_name="Nome")
@@ -141,7 +144,6 @@ class Schedule(models.Model):
 
     def __str__(self):
         return self.automation.name
-
 
 class TimeRestriction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
