@@ -186,3 +186,42 @@ class Schedule(models.Model):
 
     def __str__(self):
         return self.automation.name
+
+class Agenda(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="agendas")
+    date_execution = models.DateField(verbose_name="Data de Execução")
+    created_task = models.BooleanField(default=False, verbose_name="Tarefa Criada")
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+
+    class Meta:
+        verbose_name = "Agenda"
+        verbose_name_plural = "Agendas"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.automation.name
+
+class Task(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="tasks")
+    robot = models.ForeignKey(Robot, null=True, blank=True, on_delete=models.DO_NOTHING, related_name="tasks")
+    agenda = models.ForeignKey(Agenda, null=True, blank=True, on_delete=models.SET_NULL, related_name="tasks")
+    
+    start_time = models.DateTimeField(null=True, blank=True, verbose_name="Hora de Início")
+    end_time = models.DateTimeField(null=True, blank=True, verbose_name="Hora de Término")
+    attempts = models.IntegerField(default=0, verbose_name="Tentativas")
+    status = models.CharField(max_length=25, choices=[('pending', 'Pendente'), ('in_progress', 'Em Progresso'), ('completed', 'Concluído'), ('failed', 'Falhou')], default='pending', verbose_name="Status")
+    observations = models.TextField(blank=True, verbose_name="Observações")
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
+
+    class Meta:
+        verbose_name = "Tarefa"
+        verbose_name_plural = "Tarefas"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.automation.name} - {self.status}"
