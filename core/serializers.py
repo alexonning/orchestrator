@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Automation, Robot, RobotHasAutomation, System, AutomationHasSystem, ScheduleRestriction, Schedule
+from .models import Automation, Robot, RobotHasAutomation, System, AutomationHasSystem, ScheduleRestriction, Schedule, Agenda, Task
 
 class AutomationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,4 +34,16 @@ class ScheduleRestrictionSerializer(serializers.ModelSerializer):
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
+        fields = '__all__'
+
+
+class AgendaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Agenda
+        fields = '__all__'
+
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
         fields = '__all__'

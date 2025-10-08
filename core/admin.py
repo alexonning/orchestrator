@@ -359,7 +359,7 @@ class AgendaAdmin(ModelAdmin):
             ("Informações principais"),
             {
                 "fields": [
-                    'automation', 'date_execution', 'created_task', 'created_at'
+                    'automation', 'date_execution', 'created_task'
                 ],
             },
         ),
@@ -405,7 +405,7 @@ class TaskAdmin(ModelAdmin):
             ("Informações principais"),
             {
                 "fields": [
-                    'automation', 'robot', 'agenda', 'start_time', 'end_time', 'status'
+                    'automation', 'robot', 'agenda', 'start_time', 'end_time', 'status', 'observations'
                 ],
             },
         ),

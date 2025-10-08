@@ -190,7 +190,7 @@ class Schedule(models.Model):
 class Agenda(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="agendas")
-    date_execution = models.DateField(verbose_name="Data de Execução")
+    date_execution = models.DateTimeField(verbose_name="Data de Execução")
     created_task = models.BooleanField(default=False, verbose_name="Tarefa Criada")
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
@@ -199,6 +199,7 @@ class Agenda(models.Model):
         verbose_name = "Agenda"
         verbose_name_plural = "Agendas"
         ordering = ['-created_at']
+        unique_together = ('automation', 'date_execution')
 
     def __str__(self):
         return self.automation.name
@@ -222,6 +223,7 @@ class Task(models.Model):
         verbose_name = "Tarefa"
         verbose_name_plural = "Tarefas"
         ordering = ['-created_at']
+        unique_together = ['agenda']
 
     def __str__(self):
         return f"{self.automation.name} - {self.status}"
