@@ -16,6 +16,8 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -32,7 +34,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-
     'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     'core',
+    'datawarehouse',
 ]
 
 REST_FRAMEWORK = {
@@ -153,3 +155,73 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# drf-yasg Swagger UI: enable entering Bearer JWT in the Authorization header
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
+
+
+UNFOLD = {
+    "SITE_TITLE": "Painel Administrativo",
+    "SITE_HEADER": "Administração",
+    "SITE_SYMBOL": "apps",
+    "SHOW_APPS": False,
+    "SHOW_MENU": True,
+    "MENU": [
+        {
+            "label": "Documentação",
+            "icon": "description",
+            "url": "https://docs.djangoproject.com/",
+        },
+        {
+            "label": "Orquestrator",
+            "icon": "users",
+            "items": [
+                {
+                    "label": "Automações",
+                    "model": "core.Automation",
+                },
+                {
+                    "label": "Robos",
+                    "model": "core.Robot",
+                },  
+            ],
+        },
+#         {
+#             "label": "Vendas",
+#             "icon": "shopping-cart",
+#             "items": [
+#                 {
+#                     "label": "Pedidos",
+#                     "model": "vendas.Pedido",
+#                 },
+#                 {
+#                     "label": "Itens do Pedido",
+#                     "model": "vendas.ItemPedido",
+#                 },
+#             ],
+#         },
+#         {
+#             "label": "Configurações",
+#             "icon": "settings",
+#             "items": [
+#                 {
+#                     "label": "Usuários",
+#                     "model": "auth.User",
+#                 },
+#                 {
+#                     "label": "Grupos",
+#                     "model": "auth.Group",
+#                 },
+#             ],
+        # },
+    ],
+}

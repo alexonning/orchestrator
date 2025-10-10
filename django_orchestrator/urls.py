@@ -46,6 +46,7 @@ urlpatterns = [
     
     # Endpoints versionados da API
     path('api/<str:version>/', include('core.urls')),
+    path('api/<str:version>/', include('datawarehouse.urls')),
     
     # Swagger URLs
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
