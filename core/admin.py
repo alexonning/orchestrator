@@ -367,7 +367,7 @@ class AgendaAdmin(ModelAdmin):
 
     list_display = ('automation', 'date_execution', 'created_task', 'created_at')
     search_fields = ['automation__project_name']
-    list_filter = ['created_at']
+    list_filter = ('created_at', 'created_task')
     ordering = ('-created_at', 'automation__project_name')
 
     compressed_fields = True
@@ -413,7 +413,7 @@ class TaskAdmin(ModelAdmin):
 
     list_display = ('automation', 'robot', 'start_time', 'end_time', 'status')
     search_fields = ['automation__project_name', 'status']
-    list_filter = ['created_at']
+    list_filter = ('created_at', 'automation__project_name', 'status')
     ordering = ('-created_at', 'automation__project_name')
 
     compressed_fields = True

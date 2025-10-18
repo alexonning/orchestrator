@@ -202,14 +202,16 @@ class Agenda(models.Model):
         unique_together = ('automation', 'date_execution')
 
     def __str__(self):
-        return self.automation.name
+        return self.id.__str__()
 
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="tasks")
     robot = models.ForeignKey(Robot, null=True, blank=True, on_delete=models.DO_NOTHING, related_name="tasks")
     agenda = models.ForeignKey(Agenda, null=True, blank=True, on_delete=models.SET_NULL, related_name="tasks")
-    
+
+    priority = models.IntegerField(verbose_name="Prioridade da Automação", editable=False, null=True, blank=True)
+
     start_time = models.DateTimeField(null=True, blank=True, verbose_name="Hora de Início")
     end_time = models.DateTimeField(null=True, blank=True, verbose_name="Hora de Término")
     attempts = models.IntegerField(default=0, verbose_name="Tentativas")
@@ -224,6 +226,14 @@ class Task(models.Model):
         verbose_name_plural = "Tarefas"
         ordering = ['-created_at']
         unique_together = ['agenda']
+
+    def save(self, *args, **kwargs):
+        # Garante que a Automation esteja carregada antes de salvar
+        if self.automation_id:
+            # Sincroniza o valor da prioridade da Automation para a Task
+            self.priority = self.automation.priority
+            
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.automation.name} - {self.status}"

@@ -6,6 +6,7 @@ from .serializers import (
     SystemSerializer, AutomationHasSystemSerializer, ScheduleRestrictionSerializer,
     ScheduleSerializer, AgendaSerializer, TaskSerializer
 )
+from django_filters.rest_framework import DjangoFilterBackend
 from .filters import DynamicFilterBackend, JQLFilterBackend
 
 class BaseModelViewSet(viewsets.ModelViewSet):
@@ -260,6 +261,8 @@ class TaskViewSet(BaseModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     search_fields = ['automation__project_name', 'status']
+    filter_backends = [DjangoFilterBackend, DynamicFilterBackend, JQLFilterBackend, rest_framework_filters.SearchFilter, rest_framework_filters.OrderingFilter]
+    # filter_backends = [DjangoFilterBackend]
     ordering_fields = '__all__'
 
     @swagger_auto_schema(tags=["Task"])
