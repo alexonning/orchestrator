@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     'core',
     'datawarehouse',
+    'routines',
 ]
 
 REST_FRAMEWORK = {
