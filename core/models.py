@@ -207,17 +207,15 @@ class Agenda(models.Model):
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     automation = models.ForeignKey(Automation, on_delete=models.CASCADE, related_name="tasks")
-    robot = models.ForeignKey(Robot, null=True, blank=True, on_delete=models.DO_NOTHING, related_name="tasks")
     agenda = models.ForeignKey(Agenda, null=True, blank=True, on_delete=models.SET_NULL, related_name="tasks")
-
+    total_rotinas = models.IntegerField(default=0, verbose_name="Total de Rotinas")
+    rotinas_pendentes = models.IntegerField(default=0, verbose_name="Rotinas Pendentes")
+    rotinas_processando = models.IntegerField(default=0, verbose_name="Rotinas em Processamento")
+    rotinas_erros = models.IntegerField(default=0, verbose_name="Rotinas com Erros")
+    rotinas_outros = models.IntegerField(default=0, verbose_name="Outros Status de Rotinas")
     priority = models.IntegerField(verbose_name="Prioridade da Automação", editable=False, null=True, blank=True)
-
-    start_time = models.DateTimeField(null=True, blank=True, verbose_name="Hora de Início")
-    end_time = models.DateTimeField(null=True, blank=True, verbose_name="Hora de Término")
-    attempts = models.IntegerField(default=0, verbose_name="Tentativas")
-    status = models.CharField(max_length=25, choices=[('pending', 'Pendente'), ('in_progress', 'Em Progresso'), ('completed', 'Concluído'), ('failed', 'Falhou')], default='pending', verbose_name="Status")
-    observations = models.TextField(blank=True, verbose_name="Observações")
     
+    date_task = models.DateField(verbose_name="Data da Tarefa", auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
 
@@ -236,4 +234,4 @@ class Task(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.automation.name} - {self.status}"
+        return self.id.__str__()

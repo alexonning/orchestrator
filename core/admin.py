@@ -405,16 +405,17 @@ class TaskAdmin(ModelAdmin):
             ("Informações principais"),
             {
                 "fields": [
-                    'automation', 'robot', 'agenda', 'start_time', 'end_time', 'status', 'observations'
+                    'id', 'automation', 'agenda', 'total_rotinas', 'rotinas_pendentes', 'rotinas_processando', 'rotinas_erros', 'rotinas_outros','created_at'
                 ],
             },
         ),
     )
 
-    list_display = ('automation', 'robot', 'start_time', 'end_time', 'status')
-    search_fields = ['automation__project_name', 'status']
-    list_filter = ('created_at', 'automation__project_name', 'status')
+    list_display = ('id', 'automation', 'total_rotinas', 'rotinas_pendentes', 'rotinas_processando', 'rotinas_erros', 'rotinas_outros')
+    search_fields = ['automation']
+    list_filter = ('created_at', 'automation__project_name')
     ordering = ('-created_at', 'automation__project_name')
+    readonly_fields = ('id','created_at',)
 
     compressed_fields = True
     warn_unsaved_form = True
